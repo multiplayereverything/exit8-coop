@@ -1,6 +1,6 @@
 # Exit 8 Together: handoff
 
-Co-op mod for **The Exit 8** (Steam 2653790). First pass 2026-11-13; polish pass 2026-11-14. Version 0.2.0, wire
+Co-op mod for **The Exit 8** (Steam 2653790). First pass 2026-11-13; polish pass 2026-11-14. Version 0.2.1, wire
 protocol 2. Local git
 only (GitHub hold: no push, release, PR or repo until the user says so in this session). Repo name chosen by the user:
 `multiplayereverything/exit8-coop` (not created yet).
@@ -182,7 +182,8 @@ copy `Exit8Together` into `Win64\ue4ss\Mods`, add `Exit8Together : 1` to `ue4ss\
   clean single-commit snapshot; the earlier local history is on the local branch `pre-publish-history`, never pushed,
   because it contained personal paths). Releases: `ue4ss-4.0.0` (unmodified official UE4SS_v4.0.0.zip, SHA-256
   251ad0d1...d81e45, never delete) and `v0.2.0` pre-release (`Exit8Together-UE4SS-0.2.0.zip`, SHA-256
-  ae596594...5b41dd; downloads verified). Package with `scripts/build.ps1` then `python -I scripts/package.py <ver>`.
+  ae596594...5b41dd; downloads verified); `v0.2.1` pre-release on the user's "Yes, release 0.2.1" (Steam networking;
+  SHA-256 8e593dc7...7ba7cb). Package with `scripts/build.ps1` then `python -I scripts/package.py <ver>`.
 - Launcher and Website sessions sent the details. Website: live at /g/exit8-together/ (site id exit8-together, status
   testing). Repo homepage to set: https://www.multiplayereverything.com/#exit8-together (needs the user's OK; hold).
 - ue4ss-4.0.0 was first published as a full release by mistake; switched to pre-release like every sibling loader.

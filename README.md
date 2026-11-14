@@ -1,7 +1,7 @@
 # Exit 8 Together
 
 Co-op for **The Exit 8**: walk the same looping corridor with friends, see each other, spot the same anomaly, and
-reach Exit 8 together. Early test build (0.2.0), not released yet.
+reach Exit 8 together. Early test build (0.2.1, pre-release).
 
 ## What is shared
 - One corridor loop for everyone: the same exit count and the same anomaly in every corridor.
@@ -25,7 +25,7 @@ reach Exit 8 together. Early test build (0.2.0), not released yet.
 
 ## Known limits
 - No in-game menu yet (config file only).
-- Steam lobby play not tested; tested only with two copies on one PC.
+- Steam play is tested only on one Steam account (lobby, join, self-test); not yet between two accounts or two PCs.
 - Joining mid-run isn't handled; start together.
 - Each PC still writes its own save.
 

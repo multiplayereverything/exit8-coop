@@ -127,3 +127,11 @@ Evidence:
   (19 bytes, peer type 16, peer is me). Client's cross-process send: result 35.
 - `loop-171426` LAN with `-Lag 150 -Jitter 50`: **PASS** all checks; smooth CV 0.24/0.23; playback delay median 201 ms.
 - Still owed: a two-account Steam session (two PCs or a second account), friend auto-join, Steam lag.
+
+## 2026-11-14: 0.2.1 release
+
+- Version 0.2.1 (protocol 2 unchanged): the Steam networking pass. Released on the user's `Yes, release 0.2.1`.
+
+Evidence: `loop-190617` (0.2.1 build) **PASS** all checks (puppets 261/261, 253/253; choices 5/5; loopstate 219/0;
+  voting 5/5; smooth CV 0.09/0.08; animation; look; 0 errors). `transport_test.py` 7/7 PASS.
+  `Exit8Together-UE4SS-0.2.1.zip` SHA-256 8e593dc7148b2df6d52e16d55673057056e932a941ff3f44245ee65be07ba7cb.

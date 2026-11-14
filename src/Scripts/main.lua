@@ -5,7 +5,7 @@
 -- Then the client's exit count and anomaly are corrected to the host's. Each player streams their pose; the others see
 -- a puppet built from a mesh the game already ships.
 -- Networking lives in native\e8net.dll (TCP LAN/direct + Steam lobby/P2P); see native\e8net.cpp for the file protocol.
-local VERSION = "0.2.0"
+local VERSION = "0.2.1"
 local PROTO = "2"
 local DEFAULT_PORT = 27080
 
