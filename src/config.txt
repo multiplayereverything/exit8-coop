@@ -12,5 +12,6 @@ port = 27080
 choice = vote
 # your name as other players see it
 name = Player
-# steam join: the host's lobby id (shown in the host's UE4SS.log as "#hosting steam <id>")
+# steam join: leave empty to join the Steam friend who is hosting Exit 8 Together (both must be Steam friends and
+# running Steam); or put the host's lobby id (the host's UE4SS.log shows "#hosting steam <id>")
 lobby =

@@ -175,6 +175,14 @@ def main():
     hl, hmsg4 = look_ok(hchecks, 2, "host's puppet of client")
     cl, cmsg4 = look_ok(cchecks, 1, "client's puppet of host")
     res["look"] = (hl and cl, f"{hmsg4}; {cmsg4}")
+    # steam (only for -Steam runs): real lobby created and joined, and the in-process message self-test passed on both
+    if any(c.startswith(("steam-", "steamselftest")) for c in hchecks + cchecks):
+        created = [c for c in hchecks if c.startswith("steam-lobby-created")]
+        joined = [c for c in cchecks if c.startswith("steam-lobby-joined")]
+        hst = [c for c in hchecks if c.startswith("steamselftest")]
+        cst = [c for c in cchecks if c.startswith("steamselftest")]
+        ok = bool(created) and bool(joined) and hst and cst and all(" ok " in c + " " for c in hst + cst)
+        res["steam"] = (bool(ok), f"lobby created {created[:1]}, joined {joined[:1]}, self-test host {hst[:1]} client {cst[:1]}")
     hs, hmsg3 = smooth_ok(host, "host's puppet of client")
     cs, cmsg3 = smooth_ok(client, "client's puppet of host")
     res["smooth"] = (hs and cs, f"{hmsg3}; {cmsg3}")

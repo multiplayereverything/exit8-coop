@@ -22,7 +22,8 @@ only (GitHub hold: no push, release, PR or repo until the user says so in this s
 | Puppets animate (walk while moving, idle while still) | ✅ proven | `animation` check, run `loop-080958` (v4): walking 62/65 and 79/80 s while the peer moved, idle 269/269 and 250/250 s while still; walk clip at 60/70 distinct positions, foot height range 18.1/17.3 cm; idle clip runs (244 positions) |
 | Mutants | ✅ 5/5 killed (vote1, nosmooth added 2026-11-14) | `noanomalysync` → loopstate 242 disagreeing s (host Mimick, client none); `noguard` → 2 client-own choices, choices FAIL (both on v3.0.1); `noanim` → walking 0/67 and 0/85 s, animation FAIL (v4) |
 | Puppet actually rendered on screen | ⚠️ not proven | lab windows are minimized, no screenshots; bones are measured moving, but nobody has looked at it |
-| Steam lobby + Steam P2P | ⚠️ not proven | code written against the game's steam_api64 (SDK 1.53) exports; one Steam account can't P2P to itself; lobby creation not yet run |
+| Steam lobby + Steam P2P | ⚠️ partly proven | run `loop-steam-170541`: the game initialises Steam itself; the host created a real friends-only lobby; the client joined it and read the owner; the in-process self-test (send to own identity, read back) passed on both (19 bytes, peer type 16 = SteamID, own id), so our SDK 1.53 struct layouts and the send/receive calls are right. Not proven: delivery between two accounts (one account can't P2P between two processes: send result 35), session accept, friend auto-join |
+| Lag tolerance | ✅ proven | `loop-171426`: 150 ms + 0-50 ms jitter on every frame both ways (`-Lag 150 -Jitter 50`): all checks PASS, puppet speed CV 0.23/0.24, adaptive playback delay median 201 ms |
 | Two PCs, real keyboard/mouse, internet | ⚠️ not proven | lab only |
 | Wrong turn-back, floor 8 exit ending, chasing anomalies killing only one player | ⚠️ not tested | the bot can't route a wrong turn-back (next corridor goes to `StartSpawnLoc`) |
 
@@ -102,9 +103,12 @@ reading a stale object without `IsValid` crashed (access violation at 0x18).
 - LAN/direct: TCP **27080** (no other mod uses it; lab uses 27180, transport test 27089). Length-prefixed frames,
   HELLO/WELCOME/REJECT handshake refusing a different version or protocol with both named, 1 s keepalive, 30 s
   timeout, 4 MB send queue limit, up to 4 players, host relays.
-- Steam: friends-only lobby (`CreateLobby`), clients `JoinLobby`; data over `ISteamNetworkingMessages` channel 8 through
-  the game's own `steam_api64.dll` (needs the game to have initialised SteamAPI); only lobby members are accepted.
-  **Untested.** Join is by lobby id in `config.txt` for now (no invite / overlay join yet).
+- Steam: friends-only lobby (`CreateLobby`), clients `JoinLobby`; data over `ISteamNetworkingMessages` through the
+  game's own `steam_api64.dll` (the game initialises SteamAPI itself; measured). The host receives on channel 8,
+  clients on channel 9. Relay access is initialised at load. A client with `lobby` empty joins the first Steam
+  friend whose current game is Exit 8 and who is in a lobby (`GetFriendGamePlayed`), searching for 2 minutes.
+  Only lobby members are accepted. Every Steam start runs `!steamselftest` (send to self, read back) and logs
+  `#steamselftest ok`. No invite / overlay "Join Game" handling yet.
 - Wire (protocol 2): `P|id|seq|x|y|z|yaw|senderClock`, `V|id|seq|vote`, `D|1|seq|forward/back`, `A|1|seq|change|tag`,
   `S|1|seq|floor|change|tag|run`, `R|id|restartCount`.
 

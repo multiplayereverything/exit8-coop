@@ -1,7 +1,7 @@
 # Two-copy lab: builds, installs the mod into private\lab-host and private\lab-client, starts both hidden/small/low
 # priority (launch-lab.ps1 defaults), lets the in-mod tour run, stops them and runs the verifier.
 #   .\scripts\run-tour.ps1 [-Tour loop] [-Seconds 210] [-Mutant noanomalysync] [-Plan forward,forward,back,forward]
-param([string]$Tour = 'loop', [int]$Seconds = 210, [string]$Mutant = '', [string]$Plan = 'smart,smart,smart,smart,smart', [int]$Port = 27180, [switch]$NoBuild)
+param([string]$Tour = 'loop', [int]$Seconds = 210, [string]$Mutant = '', [string]$Plan = 'smart,smart,smart,smart,smart', [int]$Port = 27180, [switch]$NoBuild, [switch]$Steam, [int]$Lag = 0, [int]$Jitter = 0)
 $ErrorActionPreference = 'Stop'
 $root = Split-Path $PSScriptRoot -Parent
 $lock = Join-Path $root 'private\tour.lock'
@@ -26,11 +26,25 @@ try {
         Set-Content -Encoding ascii "$w\Mods\mods.txt" "Exit8Together : 1`r`nKeybinds : 0"
         if (Test-Path "$w\UE4SS.log") { Remove-Item -Force "$w\UE4SS.log" }
     }
-    $common = @{ E8T_LAB = '1'; E8T_TOUR = $Tour; E8T_MUTANT = $Mutant; E8T_PLAN = $Plan; E8T_PORT = "$Port" }
+    $common = @{ E8T_LAB = '1'; E8T_TOUR = $Tour; E8T_MUTANT = $Mutant; E8T_PLAN = $Plan; E8T_PORT = "$Port"; E8T_LAG_MS = "$Lag"; E8T_JITTER_MS = "$Jitter" }
     $h = $common.Clone(); $h.E8T_MODE = 'host'; $h.E8T_NAME = 'LabHost'
+    if ($Steam) { $h.E8T_TRANSPORT = 'steam' }
     & "$PSScriptRoot\launch-lab.ps1" -Names host -Env $h
     Start-Sleep -Seconds 8
     $c = $common.Clone(); $c.E8T_MODE = 'join'; $c.E8T_NAME = 'LabClient'; $c.E8T_ADDRESS = '127.0.0.1'
+    if ($Steam) {
+        # Steam path on one account: the host opens a real friends-only lobby; the client joins it by id and talks
+        # through ISteamNetworkingMessages (loopback to the same user; host and client read different channels).
+        $hlog = Join-Path (Ue4ssDir 'host') 'UE4SS.log'
+        $lobby = $null; $until = (Get-Date).AddSeconds(90)
+        while (-not $lobby -and (Get-Date) -lt $until) {
+            Start-Sleep -Seconds 2
+            $m = Select-String -Path $hlog -Pattern '#hosting steam (\d+)' -ErrorAction SilentlyContinue | Select-Object -Last 1
+            if ($m) { $lobby = $m.Matches[0].Groups[1].Value }
+        }
+        if (-not $lobby) { Write-Host 'host never reported a Steam lobby' } else { Write-Host "steam lobby $lobby" }
+        $c.E8T_TRANSPORT = 'steam'; $c.E8T_LOBBY = "$lobby"
+    }
     & "$PSScriptRoot\launch-lab.ps1" -Names client -Env $c
     Start-Sleep -Seconds $Seconds
 } finally {
@@ -38,7 +52,7 @@ try {
     Remove-Item -Force $lock -ErrorAction SilentlyContinue
     if (Test-Path $backup) { Copy-Item -Force "$backup\*" $saves -ErrorAction SilentlyContinue }
 }
-$out = Join-Path $root "private\runs\$Tour$(if ($Mutant) { "-$Mutant" })-$(Get-Date -Format 'HHmmss')"
+$out = Join-Path $root "private\runs\$Tour$(if ($Steam) { "-steam" })$(if ($Mutant) { "-$Mutant" })-$(Get-Date -Format 'HHmmss')"
 New-Item -ItemType Directory -Force $out | Out-Null
 foreach ($n in 'host', 'client') {
     $w = Ue4ssDir $n

@@ -18,7 +18,9 @@ reach Exit 8 together. Early test build (0.2.0), not released yet.
 2. Copy the `Exit8Together` folder into `Win64\ue4ss\Mods` and add `Exit8Together : 1` to `ue4ss\Mods\mods.txt`.
 3. Edit `ue4ss\Mods\Exit8Together\config.txt`: the host sets `mode = host`; friends set `mode = join` and the host's
    `address`. Play over LAN, a VPN (Tailscale, ZeroTier), or with TCP port 27080 forwarded on the host.
-   `transport = steam` (friends-only Steam lobby) is in the build but not tested yet.
+   **Or over Steam (no port forwarding):** everyone sets `transport = steam`; the host `mode = host`, friends
+   `mode = join` with `lobby` left empty: they join the Steam friend who is hosting. Not yet tested between two
+   Steam accounts.
 4. Everyone needs the same mod version; a different version is refused with both versions named.
 
 ## Known limits

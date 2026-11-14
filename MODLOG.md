@@ -110,3 +110,20 @@ Evidence (UE4SS v4.0.0):
 
 Evidence: `loop-*` after the change **PASS** all checks (look: host sees id 2 orange, client sees id 1 blue, 2 slots;
 smooth CV 0.07 / 0.02; voting 5/5; loopstate 335/0; 0 errors).
+
+## 2026-11-14: Steam networking pass (/coop-networking)
+
+- Steam transport: host/client channels split (8/9), `InitRelayNetworkAccess` at load, client auto-join of a Steam
+  friend's Exit 8 lobby when `lobby` is empty (`GetFriendGamePlayed`, `FriendGameInfo_t` pack 8), `#joined` event,
+  `!steamselftest` (send to own identity on channel 7, read back, check bytes and peer SteamID).
+- `run-tour.ps1 -Steam`: host opens a real lobby, the script reads its id from the host log, the client joins it.
+- Lab lag emulation in the DLL (`E8T_LAG_MS`, `E8T_JITTER_MS`, lab only, in-order hold of outgoing TCP frames);
+  `run-tour.ps1 -Lag <ms> -Jitter <ms>`.
+
+Evidence:
+- `loop-steam-170118` (full tour over Steam, one account): lobby created and joined, then the client's hello never
+  arrived; peer timeout. Expected: one Steam account cannot P2P between two processes.
+- `loop-steam-170541` (60 s): `steam` check PASS: lobby created, joined (owner = same account), self-test ok on both
+  (19 bytes, peer type 16, peer is me). Client's cross-process send: result 35.
+- `loop-171426` LAN with `-Lag 150 -Jitter 50`: **PASS** all checks; smooth CV 0.24/0.23; playback delay median 201 ms.
+- Still owed: a two-account Steam session (two PCs or a second account), friend auto-join, Steam lag.

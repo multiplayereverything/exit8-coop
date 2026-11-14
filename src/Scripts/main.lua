@@ -79,11 +79,12 @@ end
 
 local function start()
     local name = cfg.name:gsub("[%s|]", "_")
+    if cfg.transport == "steam" and cfg.mode ~= "off" then Net.send("!steamselftest") end   -- result in the log: #steamselftest ok/fail
     if cfg.mode == "host" then
         if cfg.transport == "steam" then Net.send(string.format("!host steam - %s %s %s", PROTO, VERSION, name))
         else Net.send(string.format("!host lan %s %s %s %s", cfg.port, PROTO, VERSION, name)) end
     elseif cfg.mode == "join" then
-        if cfg.transport == "steam" then Net.send(string.format("!join steam %s - %s %s %s", cfg.lobby, PROTO, VERSION, name))
+        if cfg.transport == "steam" then Net.send(string.format("!join steam %s - %s %s %s", (cfg.lobby ~= "" and cfg.lobby) or "auto", PROTO, VERSION, name))
         else Net.send(string.format("!join lan %s %s %s %s %s", cfg.address, cfg.port, PROTO, VERSION, name)) end
     end
     log("Exit 8 Together %s (protocol %s): mode=%s transport=%s", VERSION, PROTO, cfg.mode, cfg.transport)
@@ -370,7 +371,9 @@ local function onLine(line)
         log("net %s", line)
         local ev, a, b = line:match("^#(%S+)%s*(%S*)%s*(.*)$")
         if ev == "connected" then Net.myId = tonumber(a) or 0; evidence("CHECK", "connected id=%d", Net.myId)
-        elseif ev == "hosting" then Net.myId = 1
+        elseif ev == "hosting" then Net.myId = 1; if a == "steam" then evidence("CHECK", "steam-lobby-created %s", b) end
+        elseif ev == "joined" then evidence("CHECK", "steam-lobby-joined %s", b)
+        elseif ev == "steamselftest" then evidence("CHECK", "steamselftest %s %s", a, b)
         elseif ev == "peer_join" then
             local id = tonumber(a)
             if id and id ~= Net.myId then S.peers[id] = S.peers[id] or { name = b }; evidence("CHECK", "peer_join id=%d", id) end
