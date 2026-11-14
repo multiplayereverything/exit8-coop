@@ -1,0 +1,17 @@
+private/
+deps/
+artifacts/
+graphify-out/
+obj/
+bin/
+*.log
+*.ini
+*.dll
+*.exe
+*.lib
+*.exp
+*.obj
+*.pak
+*.ucas
+*.utoc
+src/ipc/

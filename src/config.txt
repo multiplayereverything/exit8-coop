@@ -1,0 +1,16 @@
+# Exit 8 Together settings. Restart the game after editing.
+# mode: off | host | join
+mode = off
+# transport: lan (direct IP / LAN, TCP) | steam (Steam lobby + Steam P2P, friends only)
+transport = lan
+# join: the host's IP address (LAN, VPN such as Tailscale/ZeroTier, or a forwarded public IP)
+address = 127.0.0.1
+# TCP port for lan; the host forwards it for play over the internet without a VPN
+port = 27080
+# how the group chooses (host's setting): vote = everyone stands at the same line (forward exit or turn-back line)
+# and then all go; host = the host's choice moves everyone
+choice = vote
+# your name as other players see it
+name = Player
+# steam join: the host's lobby id (shown in the host's UE4SS.log as "#hosting steam <id>")
+lobby =
