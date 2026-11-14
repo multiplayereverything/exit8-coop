@@ -179,5 +179,7 @@ copy `Exit8Together` into `Win64\ue4ss\Mods`, add `Exit8Together : 1` to `ue4ss\
   because it contained personal paths). Releases: `ue4ss-4.0.0` (unmodified official UE4SS_v4.0.0.zip, SHA-256
   251ad0d1...d81e45, never delete) and `v0.2.0` pre-release (`Exit8Together-UE4SS-0.2.0.zip`, SHA-256
   ae596594...5b41dd; downloads verified). Package with `scripts/build.ps1` then `python -I scripts/package.py <ver>`.
-- Launcher and Website sessions sent the details. Repo homepage not set yet (waiting for the site id).
+- Launcher and Website sessions sent the details. Website: live at /g/exit8-together/ (site id exit8-together, status
+  testing). Repo homepage to set: https://www.multiplayereverything.com/#exit8-together (needs the user's OK; hold).
+- ue4ss-4.0.0 was first published as a full release by mistake; switched to pre-release like every sibling loader.
 - The GitHub hold applies again: next push or release only on the user's word.
